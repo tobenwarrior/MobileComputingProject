@@ -9,6 +9,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -79,30 +80,55 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     // ── TTS ───────────────────────────────────────────────────────────────────
 
     private fun initTts() {
-        tts = TextToSpeech(this, this)
+        tts = TextToSpeech(this) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                val result = tts?.setLanguage(Locale.ENGLISH)
+                ttsReady = result != TextToSpeech.LANG_MISSING_DATA
+                        && result != TextToSpeech.LANG_NOT_SUPPORTED
+                if (!ttsReady) {
+                    toast(getString(R.string.cooking_tts_unavailable))
+                } else {
+                    tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                        override fun onStart(utteranceId: String?) {
+                            if (voiceEnabled) {
+                                speechRecognizer?.stopListening()
+                            }
+                        }
+
+                        override fun onDone(utteranceId: String?) {
+                            if (voiceEnabled) {
+                                binding.root.postDelayed({ startListening() }, 300)
+                            }
+                        }
+
+                        @Deprecated("Deprecated in Java")
+                        override fun onError(utteranceId: String?) {
+                            if (voiceEnabled) {
+                                binding.root.postDelayed({ startListening() }, 300)
+                            }
+                        }
+                    })
+                    if (viewModel.isTtsEnabled.value == true) {
+                        speakCurrentStep()
+                    }
+                }
+            } else {
+                ttsReady = false
+                toast(getString(R.string.cooking_tts_unavailable))
+            }
+        }
     }
 
     override fun onInit(status: Int) {
-        if (status == TextToSpeech.SUCCESS) {
-            val result = tts?.setLanguage(Locale.ENGLISH)
-            ttsReady = result != TextToSpeech.LANG_MISSING_DATA
-                    && result != TextToSpeech.LANG_NOT_SUPPORTED
-            if (!ttsReady) {
-                toast(getString(R.string.cooking_tts_unavailable))
-            } else {
-                if (viewModel.isTtsEnabled.value == true) {
-                    speakCurrentStep()
-                }
-            }
-        } else {
-            ttsReady = false
-            toast(getString(R.string.cooking_tts_unavailable))
-        }
     }
 
     private fun speakCurrentStep() {
         if (!ttsReady) return
         val text = viewModel.getCurrentStep() ?: return
+        // Stop voice recognition before speaking
+        if (voiceEnabled) {
+            speechRecognizer?.stopListening()
+        }
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "step_utterance")
     }
 
@@ -126,11 +152,14 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             override fun onResults(results: Bundle) {
                 val matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                val text = matches?.firstOrNull()?.lowercase() ?: ""
+                val allText = matches?.joinToString(" ")?.lowercase() ?: ""
+                
+                // Check all recognition candidates for keywords
                 when {
-                    "next" in text -> { stopSpeaking(); viewModel.nextStep() }
-                    "previous" in text || "back" in text -> { stopSpeaking(); viewModel.prevStep() }
-                    "repeat" in text -> speakCurrentStep()
+                    allText.contains("next") -> { stopSpeaking(); viewModel.nextStep() }
+                    allText.contains("previous") || allText.contains("back") -> { stopSpeaking(); viewModel.prevStep() }
+                    allText.contains("repeat") || allText.contains("again") -> speakCurrentStep()
+                    else -> { /* no command recognized, just restart listening */ }
                 }
                 if (voiceEnabled) startListening()
             }
