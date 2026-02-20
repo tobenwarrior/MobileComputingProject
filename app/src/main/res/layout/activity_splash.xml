@@ -7,15 +7,6 @@
     android:gravity="center"
     android:background="@color/splash_bg">
 
-    <!-- Flame / chef icon -->
-    <ImageView
-        android:id="@+id/iv_logo"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:src="@drawable/ic_chef"
-        android:contentDescription="@string/cd_app_logo"
-        android:layout_marginBottom="16dp" />
-
     <!-- App name -->
     <TextView
         android:id="@+id/tv_app_name"

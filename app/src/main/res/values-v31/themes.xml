@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        On Android 12+ the system shows its own splash screen before any Activity starts.
+        Override the SplashActivity theme here (API 31+) so the system splash uses
+        the brand orange, making it visually identical to our custom splash.
+    -->
+    <style name="Theme.SnapAndCook.Splash" parent="Theme.SnapAndCook">
+        <item name="android:windowBackground">@color/splash_bg</item>
+        <item name="android:statusBarColor">@color/splash_bg</item>
+        <item name="android:navigationBarColor">@color/splash_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_bg</item>
+    </style>
+
+</resources>

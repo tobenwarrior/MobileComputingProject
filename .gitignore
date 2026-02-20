@@ -1,6 +1,9 @@
 local.properties
 *.keystore
 *.jks
+.gradle/
+build/
+app/build/
 node_modules/
 .node_modules/
 built/*

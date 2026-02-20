@@ -2,13 +2,8 @@ package com.example.snapandcook.ui.cooking
 
 import android.content.Context
 import android.content.Intent
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -25,12 +20,11 @@ import java.util.Locale
  * Displays recipe steps one at a time with:
  *  - Large, high-contrast text for kitchen use.
  *  - Android TTS (Text-To-Speech) to read each step aloud automatically.
- *  - Proximity sensor: waving a hand over the phone advances to the next step (hands-free).
  *  - Prev / Next navigation buttons for manual control.
  *  - A progress bar showing completion across all steps.
  *  - The screen stays on (FLAG_KEEP_SCREEN_ON) while cooking.
  */
-class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, SensorEventListener {
+class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var binding: ActivityCookingModeBinding
     private val viewModel: CookingViewModel by viewModels()
@@ -39,12 +33,6 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
     private var tts: TextToSpeech? = null
     private var ttsReady = false
 
-    // Proximity sensor
-    private lateinit var sensorManager: SensorManager
-    private var proximitySensor: Sensor? = null
-    private var proximityTriggered = false  // debounce flag
-
-    // Keep screen on while cooking
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -60,7 +48,6 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
         viewModel.loadSteps(steps)
 
         initTts()
-        initProximitySensor()
         setupListeners()
         observeViewModel()
     }
@@ -79,7 +66,6 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
             if (!ttsReady) {
                 toast(getString(R.string.cooking_tts_unavailable))
             } else {
-                // Read the first step aloud immediately if TTS is on
                 if (viewModel.isTtsEnabled.value == true) {
                     speakCurrentStep()
                 }
@@ -100,45 +86,10 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
         tts?.stop()
     }
 
-    // ── Proximity Sensor ──────────────────────────────────────────────────────
-
-    private fun initProximitySensor() {
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        event ?: return
-        if (event.sensor.type == Sensor.TYPE_PROXIMITY) {
-            val distance = event.values[0]
-            val maxRange = proximitySensor?.maximumRange ?: 5f
-            val isNear = distance < maxRange * 0.5f
-
-            if (isNear && !proximityTriggered && viewModel.isDone.value == false) {
-                proximityTriggered = true
-                // Advance to next step
-                viewModel.nextStep()
-            } else if (!isNear) {
-                // Reset debounce when hand is removed
-                proximityTriggered = false
-            }
-        }
-    }
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
-
-    // ── Lifecycle sensor registration ─────────────────────────────────────────
-
-    override fun onResume() {
-        super.onResume()
-        proximitySensor?.also { sensor ->
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
-        }
-    }
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     override fun onPause() {
         super.onPause()
-        sensorManager.unregisterListener(this)
         stopSpeaking()
     }
 
@@ -186,19 +137,15 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
             val total = viewModel.totalSteps
             val step  = viewModel.getCurrentStep() ?: return@observe
 
-            // Update step number bubble and body text
             binding.tvStepNumber.text = "${idx + 1}"
             binding.tvStepBody.text = step
             binding.tvStepCounter.text = getString(R.string.cooking_step_progress, idx + 1, total)
 
-            // Update progress bar
             val pct = if (total > 0) ((idx + 1).toFloat() / total * 100).toInt() else 0
             binding.progressSteps.progress = pct
 
-            // Prev button enabled only after step 1
             binding.btnPrev.isEnabled = idx > 0
 
-            // Auto-read aloud
             if (viewModel.isTtsEnabled.value == true) {
                 speakCurrentStep()
             }
@@ -208,7 +155,6 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
             if (done) {
                 binding.cardStep.gone()
                 binding.layoutDone.show()
-                // Keep Next button enabled and relabel it "Done" so user can exit
                 binding.btnNext.isEnabled = true
                 binding.btnNext.text = getString(R.string.cooking_btn_done)
                 binding.btnPrev.isEnabled = true
