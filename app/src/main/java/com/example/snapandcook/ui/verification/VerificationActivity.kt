@@ -8,6 +8,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.snapandcook.R
 import com.example.snapandcook.databinding.ActivityVerificationBinding
@@ -34,6 +36,15 @@ class VerificationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityVerificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val baseMarginBottom = (binding.btnConfirm.layoutParams as android.view.ViewGroup.MarginLayoutParams).bottomMargin
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
+            val navInsets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val params = binding.btnConfirm.layoutParams as android.view.ViewGroup.MarginLayoutParams
+            params.bottomMargin = baseMarginBottom + navInsets.bottom
+            binding.btnConfirm.layoutParams = params
+            windowInsets
+        }
 
         setupRecycler()
         setupListeners()

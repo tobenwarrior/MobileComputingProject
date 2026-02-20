@@ -12,6 +12,9 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.bumptech.glide.Glide
 import com.example.snapandcook.R
 import com.example.snapandcook.databinding.ActivityRecipeResultBinding
@@ -41,6 +44,13 @@ class RecipeResultActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRecipeResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val baseBottomPadding = binding.bottomBar.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
+            val navInsets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            binding.bottomBar.updatePadding(bottom = baseBottomPadding + navInsets.bottom)
+            windowInsets
+        }
 
         fromSavedId = intent.getIntExtra(EXTRA_RECIPE_ID, -1)
         ingredients = intent.getStringArrayListExtra(EXTRA_INGREDIENTS) ?: emptyList()
