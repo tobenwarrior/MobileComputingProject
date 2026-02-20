@@ -36,6 +36,10 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     private val _isSaved = MutableLiveData(false)
     val isSaved: LiveData<Boolean> = _isSaved
 
+    // YouTube video ID for the current recipe (null = no video found)
+    private val _videoId = MutableLiveData<String?>(null)
+    val videoId: LiveData<String?> = _videoId
+
     // Loading / error state
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -78,12 +82,17 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     fun loadDetail(recipeId: Int) {
         _isLoading.value = true
         _error.value = null
+        _videoId.value = null
 
         viewModelScope.launch {
             val result = repository.getRecipeDetail(recipeId)
             result.onSuccess { detail ->
                 _recipeDetail.value = detail
                 _isSaved.value = dao.isRecipeSaved(recipeId) > 0
+                // Fetch video in parallel — non-blocking, fails silently
+                launch {
+                    _videoId.value = repository.searchRecipeVideo(detail.title)
+                }
             }.onFailure { e ->
                 _error.value = e.localizedMessage ?: "Failed to load recipe details."
             }
@@ -137,6 +146,15 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
             ?.analyzedInstructions
             ?.flatMap { it.steps ?: emptyList() }
             ?.map { it.step }
+            ?: emptyList()
+    }
+
+    /** Build a list of equipment names per step (parallel to getSteps()). */
+    fun getEquipment(): List<List<String>> {
+        return _recipeDetail.value
+            ?.analyzedInstructions
+            ?.flatMap { it.steps ?: emptyList() }
+            ?.map { step -> step.equipment?.map { it.name } ?: emptyList() }
             ?: emptyList()
     }
 

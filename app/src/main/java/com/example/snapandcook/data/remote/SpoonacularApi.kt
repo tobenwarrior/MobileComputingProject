@@ -2,6 +2,7 @@ package com.example.snapandcook.data.remote
 
 import com.example.snapandcook.data.model.RecipeDetail
 import com.example.snapandcook.data.model.RecipeSummary
+import com.example.snapandcook.data.model.VideoSearchResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -46,4 +47,18 @@ interface SpoonacularApi {
         @Query("includeNutrition") includeNutrition: Boolean = true,
         @Query("apiKey") apiKey: String
     ): Response<RecipeDetail>
+
+    /**
+     * Search for YouTube videos related to a recipe by name.
+     *
+     * @param query  Recipe name to search for
+     * @param number Max results (1 is sufficient)
+     * @param apiKey Spoonacular API key
+     */
+    @GET("food/videos/search")
+    suspend fun searchVideos(
+        @Query("query") query: String,
+        @Query("number") number: Int = 1,
+        @Query("apiKey") apiKey: String
+    ): Response<VideoSearchResponse>
 }

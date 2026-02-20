@@ -65,3 +65,16 @@ data class InstructionStep(
 data class Equipment(
     @SerializedName("name") val name: String
 )
+
+// ─── Spoonacular: /food/videos/search ────────────────────────────────────────
+
+data class VideoSearchResponse(
+    @SerializedName("videos") val videos: List<RecipeVideo>?,
+    @SerializedName("totalResults") val totalResults: Int
+)
+
+data class RecipeVideo(
+    @SerializedName("title") val title: String,
+    @SerializedName("youTubeId") val youTubeId: String,
+    @SerializedName("thumbnail") val thumbnail: String
+)

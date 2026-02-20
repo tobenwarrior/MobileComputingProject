@@ -10,7 +10,11 @@
       "Bash(git filter-branch:*)",
       "Bash(git add:*)",
       "Bash(git stash:*)",
-      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch:*)"
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch:*)",
+      "Bash(./gradlew assembleDebug:*)",
+      "Bash(bash gradlew:*)",
+      "Bash(cmd.exe /c gradlew.bat assembleDebug)",
+      "Bash(xargs cat:*)"
     ]
   }
 }

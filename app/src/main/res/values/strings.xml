@@ -54,6 +54,7 @@
     <string name="recipe_loading">Finding the perfect recipe…</string>
     <string name="recipe_error">Could not load recipe. Please try again.</string>
     <string name="recipe_no_results">No recipes found for your ingredients. Try adding more!</string>
+    <string name="recipe_video_title">Watch How It\'s Made</string>
     <string name="recipe_step_label">Step %d of %d</string>
 
     <!-- Saved Recipes -->
@@ -77,6 +78,9 @@
     <string name="cooking_gesture_hint">Wave your hand near the top of your phone to go to the next step</string>
     <string name="cooking_step_progress">Step %d of %d</string>
     <string name="cooking_tts_unavailable">Text-to-speech is not available on this device.</string>
+    <string name="cooking_btn_voice_on">Voice commands: ON</string>
+    <string name="cooking_btn_voice_off">Voice commands: OFF</string>
+    <string name="cooking_voice_unavailable">Voice recognition is not available on this device.</string>
 
     <!-- Common -->
     <string name="btn_back">Back</string>

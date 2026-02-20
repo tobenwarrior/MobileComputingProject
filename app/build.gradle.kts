@@ -24,8 +24,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // API keys are stored in local.properties (gitignored) — never hardcode here
-        buildConfigField("String", "SPOONACULAR_API_KEY", "\"${localProps["SPOONACULAR_API_KEY"]}\"")
+        // API keys are stored in local.properties (gitignored) — never hardcode here.
+        // Add more Spoonacular keys by adding SPOONACULAR_API_KEY_4=xxx etc. to local.properties.
+        // Keys are collected until a gap is found and stored pipe-delimited in BuildConfig.
+        val spoonacularKeys = generateSequence(1) { it + 1 }
+            .map { n -> localProps["SPOONACULAR_API_KEY_$n"]?.toString()?.trim() }
+            .takeWhile { !it.isNullOrBlank() }
+            .joinToString("|")
+        buildConfigField("String", "SPOONACULAR_API_KEYS", "\"$spoonacularKeys\"")
         buildConfigField("String", "GEMINI_API_KEY", "\"${localProps["GEMINI_API_KEY"]}\"")
     }
 

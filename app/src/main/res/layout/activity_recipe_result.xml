@@ -84,10 +84,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Hero image -->
+            <!-- ── Hero image ──────────────────────────────────────────────── -->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="260dp">
+                android:layout_height="280dp">
 
                 <ImageView
                     android:id="@+id/iv_recipe"
@@ -97,6 +97,12 @@
                     android:src="@drawable/ic_placeholder_food"
                     android:contentDescription="@string/cd_recipe_image" />
 
+                <!-- Bottom gradient for depth -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/bg_image_gradient" />
 
                 <!-- Back button -->
                 <ImageView
@@ -116,7 +122,7 @@
 
             </FrameLayout>
 
-            <!-- Recipe info card -->
+            <!-- ── Recipe info card ────────────────────────────────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -228,9 +234,97 @@
 
             </LinearLayout>
 
+            <!-- ── Video section (hidden until a video is found) ───────────── -->
+            <LinearLayout
+                android:id="@+id/layout_video_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/bg_tertiary"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
+
+                <!-- Section header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/bg_section_bar"
+                        android:layout_marginEnd="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recipe_video_title"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                </LinearLayout>
+
+                <!-- Video thumbnail card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/separator"
+                    app:strokeWidth="1dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp">
+
+                        <!-- YouTube thumbnail -->
+                        <ImageView
+                            android:id="@+id/iv_video_thumb"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_placeholder_food" />
+
+                        <!-- Dark overlay -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#44000000" />
+
+                        <!-- Play button -->
+                        <FrameLayout
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_play_button">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_play"
+                                android:contentDescription="Play video" />
+
+                        </FrameLayout>
+
+                    </FrameLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
             <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/separator" />
 
-            <!-- Ingredients section -->
+            <!-- ── Ingredients section ─────────────────────────────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -242,14 +336,29 @@
                 android:paddingBottom="20dp"
                 android:layout_marginTop="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- Section header with accent bar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/recipe_ingredients_title"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/bg_section_bar"
+                        android:layout_marginEnd="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recipe_ingredients_title"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_ingredients"
@@ -263,7 +372,7 @@
 
             <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/separator" />
 
-            <!-- Instructions section -->
+            <!-- ── Instructions section ───────────────────────────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -275,14 +384,29 @@
                 android:paddingBottom="20dp"
                 android:layout_marginTop="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- Section header with accent bar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/recipe_instructions_title"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="16dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/bg_section_bar"
+                        android:layout_marginEnd="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recipe_instructions_title"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/ll_steps"

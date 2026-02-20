@@ -1,17 +1,28 @@
 package com.example.snapandcook.ui.cooking
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.snapandcook.R
 import com.example.snapandcook.databinding.ActivityCookingModeBinding
 import com.example.snapandcook.util.gone
 import com.example.snapandcook.util.show
 import com.example.snapandcook.util.toast
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.util.Locale
 
 /**
@@ -20,6 +31,8 @@ import java.util.Locale
  * Displays recipe steps one at a time with:
  *  - Large, high-contrast text for kitchen use.
  *  - Android TTS (Text-To-Speech) to read each step aloud automatically.
+ *  - Voice commands: say "next", "previous", or "repeat" hands-free.
+ *  - Equipment chips showing tools needed for each step.
  *  - Prev / Next navigation buttons for manual control.
  *  - A progress bar showing completion across all steps.
  *  - The screen stays on (FLAG_KEEP_SCREEN_ON) while cooking.
@@ -33,6 +46,10 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var tts: TextToSpeech? = null
     private var ttsReady = false
 
+    // Voice recognition
+    private var speechRecognizer: SpeechRecognizer? = null
+    private var voiceEnabled = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -42,12 +59,19 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         val title = intent.getStringExtra(EXTRA_TITLE) ?: ""
         val steps = intent.getStringArrayListExtra(EXTRA_STEPS) ?: arrayListOf()
+        val equipmentJson = intent.getStringExtra(EXTRA_EQUIPMENT) ?: "[]"
+        val equipment: List<List<String>> = try {
+            val type = object : TypeToken<List<List<String>>>() {}.type
+            Gson().fromJson(equipmentJson, type) ?: emptyList()
+        } catch (e: Exception) {
+            emptyList()
+        }
 
         binding.tvRecipeTitle.text = title
-
-        viewModel.loadSteps(steps)
+        viewModel.loadSteps(steps, equipment)
 
         initTts()
+        initSpeechRecognizer()
         setupListeners()
         observeViewModel()
     }
@@ -86,15 +110,144 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         tts?.stop()
     }
 
+    // ── Voice recognition ─────────────────────────────────────────────────────
+
+    private fun initSpeechRecognizer() {
+        if (!SpeechRecognizer.isRecognitionAvailable(this)) return
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+        speechRecognizer?.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {}
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() {}
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+
+            override fun onResults(results: Bundle) {
+                val matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                val text = matches?.firstOrNull()?.lowercase() ?: ""
+                when {
+                    "next" in text -> { stopSpeaking(); viewModel.nextStep() }
+                    "previous" in text || "back" in text -> { stopSpeaking(); viewModel.prevStep() }
+                    "repeat" in text -> speakCurrentStep()
+                }
+                if (voiceEnabled) startListening()
+            }
+
+            override fun onError(error: Int) {
+                if (voiceEnabled) {
+                    if (error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY) {
+                        binding.root.postDelayed({ if (voiceEnabled) startListening() }, 500)
+                    } else {
+                        startListening()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun startListening() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+        }
+        speechRecognizer?.startListening(intent)
+    }
+
+    private fun toggleVoice() {
+        if (!voiceEnabled) {
+            if (!SpeechRecognizer.isRecognitionAvailable(this)) {
+                toast(getString(R.string.cooking_voice_unavailable))
+                return
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(Manifest.permission.RECORD_AUDIO), RC_AUDIO
+                )
+                return
+            }
+            voiceEnabled = true
+            updateVoiceButton()
+            startListening()
+        } else {
+            voiceEnabled = false
+            speechRecognizer?.stopListening()
+            updateVoiceButton()
+        }
+    }
+
+    private fun updateVoiceButton() {
+        binding.btnVoice.setImageResource(
+            if (voiceEnabled) R.drawable.ic_mic else R.drawable.ic_mic_off
+        )
+        binding.btnVoice.contentDescription = getString(
+            if (voiceEnabled) R.string.cooking_btn_voice_on else R.string.cooking_btn_voice_off
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == RC_AUDIO &&
+            grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
+        ) {
+            voiceEnabled = true
+            updateVoiceButton()
+            startListening()
+        }
+    }
+
+    // ── Equipment chips ────────────────────────────────────────────────────────
+
+    private fun updateEquipmentChips() {
+        val equipment = viewModel.getCurrentEquipment()
+        if (equipment.isEmpty()) {
+            binding.scrollEquipment.gone()
+            return
+        }
+        binding.scrollEquipment.show()
+        binding.llEquipment.removeAllViews()
+        val density = resources.displayMetrics.density
+        val paddingH = (14 * density).toInt()
+        val paddingV = (7 * density).toInt()
+        val marginEnd = (8 * density).toInt()
+        equipment.forEach { name ->
+            val chip = TextView(this).apply {
+                text = name
+                textSize = 13f
+                setTextColor(ContextCompat.getColor(this@CookingModeActivity, R.color.text_secondary))
+                background = ContextCompat.getDrawable(this@CookingModeActivity, R.drawable.bg_chip)
+                setPadding(paddingH, paddingV, paddingH, paddingV)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).also { it.marginEnd = marginEnd }
+            }
+            binding.llEquipment.addView(chip)
+        }
+    }
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     override fun onPause() {
         super.onPause()
         stopSpeaking()
+        if (voiceEnabled) speechRecognizer?.stopListening()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (voiceEnabled) startListening()
     }
 
     override fun onDestroy() {
         tts?.shutdown()
+        speechRecognizer?.destroy()
         super.onDestroy()
     }
 
@@ -128,6 +281,8 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 stopSpeaking()
             }
         }
+
+        binding.btnVoice.setOnClickListener { toggleVoice() }
     }
 
     // ── ViewModel observation ─────────────────────────────────────────────────
@@ -135,7 +290,7 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun observeViewModel() {
         viewModel.currentStepIndex.observe(this) { idx ->
             val total = viewModel.totalSteps
-            val step  = viewModel.getCurrentStep() ?: return@observe
+            val step = viewModel.getCurrentStep() ?: return@observe
 
             binding.tvStepNumber.text = "${idx + 1}"
             binding.tvStepBody.text = step
@@ -145,6 +300,8 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             binding.progressSteps.progress = pct
 
             binding.btnPrev.isEnabled = idx > 0
+
+            updateEquipmentChips()
 
             if (viewModel.isTtsEnabled.value == true) {
                 speakCurrentStep()
@@ -189,12 +346,20 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     companion object {
         private const val EXTRA_TITLE = "extra_title"
         private const val EXTRA_STEPS = "extra_steps"
+        private const val EXTRA_EQUIPMENT = "extra_equipment"
+        private const val RC_AUDIO = 101
 
-        fun start(context: Context, title: String, steps: List<String>) {
+        fun start(
+            context: Context,
+            title: String,
+            steps: List<String>,
+            equipment: List<List<String>> = emptyList()
+        ) {
             context.startActivity(
                 Intent(context, CookingModeActivity::class.java).apply {
                     putExtra(EXTRA_TITLE, title)
                     putStringArrayListExtra(EXTRA_STEPS, ArrayList(steps))
+                    putExtra(EXTRA_EQUIPMENT, Gson().toJson(equipment))
                 }
             )
         }

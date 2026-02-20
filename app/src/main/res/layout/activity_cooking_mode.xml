@@ -69,6 +69,18 @@
             android:clickable="true"
             android:focusable="true" />
 
+        <!-- Voice command toggle -->
+        <ImageView
+            android:id="@+id/btn_voice"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/ic_mic_off"
+            android:padding="10dp"
+            android:contentDescription="@string/cooking_btn_voice_off"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="2dp" />
+
     </LinearLayout>
 
     <View
@@ -153,6 +165,24 @@
                 android:lineSpacingExtra="6dp"
                 android:gravity="center"
                 android:letterSpacing="-0.01" />
+
+            <!-- Equipment chips (hidden when step has no equipment) -->
+            <HorizontalScrollView
+                android:id="@+id/scroll_equipment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/ll_equipment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical" />
+
+            </HorizontalScrollView>
 
         </LinearLayout>
 

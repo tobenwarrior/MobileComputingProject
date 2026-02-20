@@ -1,12 +1,18 @@
 package com.example.snapandcook.ui.recipe
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -72,6 +78,11 @@ class RecipeResultActivity : AppCompatActivity() {
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
 
+        binding.ivRecipe.setOnClickListener {
+            val url = viewModel.recipeDetail.value?.imageUrl ?: return@setOnClickListener
+            showFullscreenImage(url)
+        }
+
         binding.btnRetry.setOnClickListener {
             viewModel.findRecipes(ingredients)
         }
@@ -96,7 +107,8 @@ class RecipeResultActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val title = viewModel.recipeDetail.value?.title ?: ""
-            CookingModeActivity.start(this, title, steps)
+            val equipment = viewModel.getEquipment()
+            CookingModeActivity.start(this, title, steps, equipment)
         }
     }
 
@@ -157,10 +169,28 @@ class RecipeResultActivity : AppCompatActivity() {
                 binding.btnNextRecipe.isEnabled = idx < total
             }
 
-            // Ingredients as a bullet list
-            val ingredientsText = detail.extendedIngredients
-                ?.joinToString("\n") { "• ${it.original}" } ?: "—"
-            binding.tvIngredients.text = ingredientsText
+            // Ingredients — green ✓ for items the user already has, bullet for need-to-buy
+            val userOwned = ingredients.map { it.lowercase().trim() }
+            val greenColor = ContextCompat.getColor(this, R.color.brand_secondary_dark)
+            val spanned = SpannableStringBuilder()
+            val recipeIngredients = detail.extendedIngredients ?: emptyList()
+            recipeIngredients.forEachIndexed { i, ingredient ->
+                val name = ingredient.name.lowercase().trim()
+                val hasIt = userOwned.isNotEmpty() &&
+                    userOwned.any { u -> u.contains(name) || name.contains(u) }
+                val lineStart = spanned.length
+                spanned.append(if (hasIt) "✓ " else "• ")
+                spanned.append(ingredient.original)
+                if (i < recipeIngredients.size - 1) spanned.append("\n")
+                if (hasIt) {
+                    spanned.setSpan(
+                        ForegroundColorSpan(greenColor),
+                        lineStart, spanned.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
+            binding.tvIngredients.text = if (spanned.isEmpty()) "—" else spanned
 
             // Steps — dynamically inflated rows for large, readable text
             binding.llSteps.removeAllViews()
@@ -210,6 +240,39 @@ class RecipeResultActivity : AppCompatActivity() {
         viewModel.isSaved.observe(this) { saved ->
             binding.btnSave.text = if (saved) "✓ Saved" else getString(R.string.recipe_btn_save)
         }
+
+        viewModel.videoId.observe(this) { videoId ->
+            if (videoId != null) {
+                binding.layoutVideoSection.show()
+                val thumbUrl = "https://img.youtube.com/vi/$videoId/hqdefault.jpg"
+                Glide.with(this)
+                    .load(thumbUrl)
+                    .centerCrop()
+                    .into(binding.ivVideoThumb)
+                binding.cvVideo.setOnClickListener {
+                    startActivity(
+                        Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=$videoId"))
+                    )
+                }
+            } else {
+                binding.layoutVideoSection.gone()
+            }
+        }
+    }
+
+    private fun showFullscreenImage(url: String) {
+        val dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        val imageView = ImageView(this).apply {
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setBackgroundColor(Color.BLACK)
+        }
+        Glide.with(this)
+            .load(url)
+            .placeholder(R.drawable.ic_placeholder_food)
+            .into(imageView)
+        dialog.setContentView(imageView)
+        imageView.setOnClickListener { dialog.dismiss() }
+        dialog.show()
     }
 
     companion object {

@@ -7,13 +7,15 @@ import androidx.lifecycle.ViewModel
 /**
  * ViewModel for the Cooking Mode screen.
  *
- * Manages the current step index and TTS state.
- * The actual TTS engine and SensorManager are owned by the Activity (lifecycle-aware).
+ * Manages the current step index, TTS state, and equipment per step.
+ * The actual TTS engine and SpeechRecognizer are owned by the Activity (lifecycle-aware).
  */
 class CookingViewModel : ViewModel() {
 
     private val _steps = MutableLiveData<List<String>>(emptyList())
     val steps: LiveData<List<String>> = _steps
+
+    private val _equipmentPerStep = MutableLiveData<List<List<String>>>(emptyList())
 
     private val _currentStepIndex = MutableLiveData(0)
     val currentStepIndex: LiveData<Int> = _currentStepIndex
@@ -24,8 +26,9 @@ class CookingViewModel : ViewModel() {
     private val _isDone = MutableLiveData(false)
     val isDone: LiveData<Boolean> = _isDone
 
-    fun loadSteps(steps: List<String>) {
+    fun loadSteps(steps: List<String>, equipment: List<List<String>> = emptyList()) {
         _steps.value = steps
+        _equipmentPerStep.value = equipment
         _currentStepIndex.value = 0
         _isDone.value = false
     }
@@ -34,6 +37,12 @@ class CookingViewModel : ViewModel() {
         val list = _steps.value ?: return null
         val idx = _currentStepIndex.value ?: return null
         return list.getOrNull(idx)
+    }
+
+    fun getCurrentEquipment(): List<String> {
+        val equipment = _equipmentPerStep.value ?: return emptyList()
+        val idx = _currentStepIndex.value ?: return emptyList()
+        return equipment.getOrElse(idx) { emptyList() }
     }
 
     fun nextStep() {
