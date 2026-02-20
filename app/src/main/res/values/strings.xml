@@ -71,6 +71,7 @@
     <string name="cooking_btn_next">Next</string>
     <string name="cooking_btn_tts_on">Read Aloud: ON</string>
     <string name="cooking_btn_tts_off">Read Aloud: OFF</string>
+    <string name="cooking_btn_done">Done</string>
     <string name="cooking_done_title">You\'re done!</string>
     <string name="cooking_done_subtitle">Enjoy your meal!</string>
     <string name="cooking_gesture_hint">Wave your hand near the top of your phone to go to the next step</string>

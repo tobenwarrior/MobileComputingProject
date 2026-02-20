@@ -22,10 +22,12 @@ class RecipeRepository {
      */
     suspend fun findRecipes(ingredients: List<String>): Result<List<RecipeSummary>> {
         return try {
-            val query = ingredients.joinToString(",") { it.trim() }
+            // Cap at 15 ingredients — too many causes poor Spoonacular matching
+            val query = ingredients.take(15).joinToString(",") { it.trim() }
             val response = api.findByIngredients(
                 ingredients = query,
                 number = 6,
+                ranking = 2, // 2 = minimise missing ingredients (better relevance)
                 apiKey = apiKey
             )
             if (response.isSuccessful) {

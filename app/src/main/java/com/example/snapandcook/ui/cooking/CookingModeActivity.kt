@@ -161,8 +161,12 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
         }
 
         binding.btnNext.setOnClickListener {
-            stopSpeaking()
-            viewModel.nextStep()
+            if (viewModel.isDone.value == true) {
+                finish()
+            } else {
+                stopSpeaking()
+                viewModel.nextStep()
+            }
         }
 
         binding.btnTts.setOnClickListener {
@@ -204,7 +208,10 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
             if (done) {
                 binding.cardStep.gone()
                 binding.layoutDone.show()
-                binding.btnNext.isEnabled = false
+                // Keep Next button enabled and relabel it "Done" so user can exit
+                binding.btnNext.isEnabled = true
+                binding.btnNext.text = getString(R.string.cooking_btn_done)
+                binding.btnPrev.isEnabled = true
                 binding.progressSteps.progress = 100
                 stopSpeaking()
                 if (ttsReady) {
@@ -219,6 +226,7 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Se
                 binding.cardStep.show()
                 binding.layoutDone.gone()
                 binding.btnNext.isEnabled = true
+                binding.btnNext.text = getString(R.string.cooking_btn_next)
             }
         }
 

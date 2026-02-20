@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.snapandcook.R
 import com.example.snapandcook.data.local.SavedRecipe
 import com.example.snapandcook.databinding.ActivitySavedRecipesBinding
-import com.example.snapandcook.ui.cooking.CookingModeActivity
-import com.example.snapandcook.util.RecipeConverter
+import com.example.snapandcook.ui.recipe.RecipeResultActivity
 import com.example.snapandcook.util.gone
 import com.example.snapandcook.util.show
 
@@ -42,7 +41,7 @@ class SavedRecipesActivity : AppCompatActivity() {
 
     private fun setupRecycler() {
         adapter = SavedRecipeAdapter(
-            onItemClick = { recipe -> openCookingMode(recipe) },
+            onItemClick = { recipe -> RecipeResultActivity.startFromSaved(this, recipe.recipeId) },
             onDelete    = { recipe -> confirmDelete(recipe) }
         )
         binding.rvSaved.apply {
@@ -96,9 +95,4 @@ class SavedRecipesActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun openCookingMode(recipe: SavedRecipe) {
-        val steps = RecipeConverter.parseSteps(recipe.stepsJson)
-        if (steps.isEmpty()) return
-        CookingModeActivity.start(this, recipe.title, steps)
-    }
 }

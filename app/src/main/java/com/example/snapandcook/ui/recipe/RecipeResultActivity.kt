@@ -35,18 +35,26 @@ class RecipeResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRecipeResultBinding
     private val viewModel: RecipeViewModel by viewModels()
     private var ingredients: List<String> = emptyList()
+    private var fromSavedId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecipeResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        fromSavedId = intent.getIntExtra(EXTRA_RECIPE_ID, -1)
         ingredients = intent.getStringArrayListExtra(EXTRA_INGREDIENTS) ?: emptyList()
 
         setupListeners()
         observeViewModel()
 
-        viewModel.findRecipes(ingredients)
+        if (fromSavedId != -1) {
+            // Launched from Saved Recipes — load single recipe by ID, no pagination
+            binding.layoutPagination.gone()
+            viewModel.loadDetail(fromSavedId)
+        } else {
+            viewModel.findRecipes(ingredients)
+        }
     }
 
     // ── Listeners ─────────────────────────────────────────────────────────────
@@ -130,12 +138,14 @@ class RecipeResultActivity : AppCompatActivity() {
                 binding.tvCalories.show()
             }
 
-            // Pagination label
-            val idx = viewModel.currentRecipeIndex + 1
-            val total = viewModel.totalRecipes
-            binding.tvRecipePage.text = "$idx / $total"
-            binding.btnPrevRecipe.isEnabled = idx > 1
-            binding.btnNextRecipe.isEnabled = idx < total
+            // Pagination label — hidden when launched from saved recipe
+            if (fromSavedId == -1) {
+                val idx = viewModel.currentRecipeIndex + 1
+                val total = viewModel.totalRecipes
+                binding.tvRecipePage.text = "$idx / $total"
+                binding.btnPrevRecipe.isEnabled = idx > 1
+                binding.btnNextRecipe.isEnabled = idx < total
+            }
 
             // Ingredients as a bullet list
             val ingredientsText = detail.extendedIngredients
@@ -194,11 +204,20 @@ class RecipeResultActivity : AppCompatActivity() {
 
     companion object {
         private const val EXTRA_INGREDIENTS = "extra_ingredients"
+        private const val EXTRA_RECIPE_ID = "extra_recipe_id"
 
         fun start(context: Context, ingredients: List<String>) {
             context.startActivity(
                 Intent(context, RecipeResultActivity::class.java).apply {
                     putStringArrayListExtra(EXTRA_INGREDIENTS, ArrayList(ingredients))
+                }
+            )
+        }
+
+        fun startFromSaved(context: Context, recipeId: Int) {
+            context.startActivity(
+                Intent(context, RecipeResultActivity::class.java).apply {
+                    putExtra(EXTRA_RECIPE_ID, recipeId)
                 }
             )
         }

@@ -97,11 +97,6 @@
                     android:src="@drawable/ic_placeholder_food"
                     android:contentDescription="@string/cd_recipe_image" />
 
-                <!-- Gradient scrim at top for back button legibility -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:background="@drawable/bg_camera_overlay" />
 
                 <!-- Back button -->
                 <ImageView
@@ -191,6 +186,7 @@
 
                 <!-- Recipe pagination (e.g. "1 of 5") -->
                 <LinearLayout
+                    android:id="@+id/layout_pagination"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -201,7 +197,7 @@
                         android:id="@+id/btn_prev_recipe"
                         style="@style/SnapAndCook.Button.Secondary"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="◀  Prev"
                         app:cornerRadius="10dp"
@@ -221,7 +217,7 @@
                         android:id="@+id/btn_next_recipe"
                         style="@style/SnapAndCook.Button.Secondary"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Next  ▶"
                         app:cornerRadius="10dp"
@@ -310,7 +306,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="12dp"
-        android:paddingBottom="28dp"
+        android:paddingBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -320,7 +316,7 @@
             android:id="@+id/btn_save"
             style="@style/SnapAndCook.Button.Secondary"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="56dp"
             android:layout_weight="1"
             android:text="@string/recipe_btn_save"
             android:layout_marginEnd="10dp" />
@@ -330,8 +326,8 @@
             android:id="@+id/btn_cook"
             style="@style/SnapAndCook.Button.Primary"
             android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="2"
+            android:layout_height="56dp"
+            android:layout_weight="1"
             android:text="@string/recipe_btn_cook" />
 
     </LinearLayout>

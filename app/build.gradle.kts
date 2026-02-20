@@ -1,7 +1,14 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+}
+
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) load(f.inputStream())
 }
 
 android {
@@ -17,10 +24,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Spoonacular API Key — replace with your actual key from spoonacular.com/food-api
-        buildConfigField("String", "SPOONACULAR_API_KEY", "\"0b1bd420bc50470c9dc34d24e8f0d2b6\"")
-        // Google Gemini API Key — get free key from aistudio.google.com
-        buildConfigField("String", "GEMINI_API_KEY", "\"AIzaSyB3DMX_p4_XsHTYqG1S0h4ASuOWlWReFLA\"")
+        // API keys are stored in local.properties (gitignored) — never hardcode here
+        buildConfigField("String", "SPOONACULAR_API_KEY", "\"${localProps["SPOONACULAR_API_KEY"]}\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"${localProps["GEMINI_API_KEY"]}\"")
     }
 
     buildTypes {
