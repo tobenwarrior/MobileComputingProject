@@ -40,7 +40,8 @@ fun Context.decodeBitmapFromUri(uri: Uri, maxWidth: Int = 1024, maxHeight: Int =
         contentResolver.openInputStream(uri)?.use {
             BitmapFactory.decodeStream(it, null, options)
         }
-    } catch (e: IOException) {
+    } catch (e: Exception) {
+        android.util.Log.e("BitmapDecode", "Failed to decode URI: $uri — ${e::class.simpleName}: ${e.message}")
         null
     }
 }

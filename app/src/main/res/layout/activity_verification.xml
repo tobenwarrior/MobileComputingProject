@@ -68,33 +68,44 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- ── Analysing progress ─────────────────────────────────────────────── -->
+    <!-- ── Analysing overlay (full-screen, on top of everything) ─────────── -->
     <LinearLayout
         android:id="@+id/layout_analyzing"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:gravity="center"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:background="@color/brand_primary_surface"
+        android:background="#F2FFFFFF"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/separator"
+        android:elevation="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ProgressBar
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:indeterminateTint="@color/brand_primary"
-            android:layout_marginEnd="12dp" />
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:indeterminateTint="@color/brand_primary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/verification_analyzing"
             android:textColor="@color/brand_primary"
-            android:textSize="15sp" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This may take a few seconds…"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginTop="6dp" />
 
     </LinearLayout>
 

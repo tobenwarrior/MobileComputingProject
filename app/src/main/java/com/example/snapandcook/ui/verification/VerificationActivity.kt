@@ -39,11 +39,13 @@ class VerificationActivity : AppCompatActivity() {
         setupListeners()
         observeViewModel()
 
-        // Kick off ML Kit analysis
+        // Defer analysis until after onStart so LiveData observers are active
         val uriStrings = intent.getStringArrayListExtra(EXTRA_URIS) ?: emptyList<String>()
         val uris = uriStrings.map { Uri.parse(it) }
         if (uris.isNotEmpty()) {
-            viewModel.analyzeImages(uris)
+            window.decorView.post {
+                viewModel.analyzeImages(uris)
+            }
         }
     }
 

@@ -15,7 +15,6 @@ room = "2.6.1"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 gson = "2.11.0"
-mlkitImageLabeling = "17.0.9"
 coroutines = "1.8.1"
 glide = "4.16.0"
 fragment = "1.8.5"
@@ -52,8 +51,6 @@ retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-# ML Kit
-mlkit-image-labeling = { group = "com.google.mlkit", name = "image-labeling", version.ref = "mlkitImageLabeling" }
 # Coroutines
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }

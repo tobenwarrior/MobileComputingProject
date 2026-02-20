@@ -4,7 +4,7 @@ package com.example.snapandcook.data.model
  * Represents a detected or manually entered ingredient.
  *
  * @param name The display name of the ingredient.
- * @param confidence ML Kit confidence score (0–1). Null for manually entered items.
+ * @param confidence Detection confidence score (0–1). Null for Gemini-detected or manually entered items.
  * @param isManual True if the user typed this ingredient manually.
  */
 data class Ingredient(

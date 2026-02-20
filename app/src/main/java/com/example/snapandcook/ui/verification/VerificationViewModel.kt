@@ -3,6 +3,7 @@ package com.example.snapandcook.ui.verification
 import android.app.Application
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -46,15 +47,21 @@ class VerificationViewModel(application: Application) : AndroidViewModel(applica
 
         viewModelScope.launch {
             try {
+                Log.d("VerificationVM", "analyzeImages: ${uris.size} URIs received")
+
                 val bitmaps = withContext(Dispatchers.IO) {
                     uris.mapNotNull { uri ->
                         getApplication<Application>().decodeBitmapFromUri(uri)
                     }
                 }
 
+                Log.d("VerificationVM", "Decoded ${bitmaps.size}/${uris.size} bitmaps successfully")
+
                 val detected = withContext(Dispatchers.Default) {
                     detector.detectFromMultipleBitmaps(bitmaps)
                 }
+
+                Log.d("VerificationVM", "Detection complete — ${detected.size} ingredients found")
 
                 val current = _ingredients.value ?: mutableListOf()
                 // Merge: don't duplicate names already in the list
