@@ -2,7 +2,7 @@
     <string name="app_name">Snap &amp; Cook</string>
 
     <!-- Splash -->
-    <string name="splash_tagline">Scan. Detect. Cook.</string>
+    <string name="splash_tagline">Snap. Detect. Cook.</string>
 
     <!-- Home / Main -->
     <string name="home_greeting_morning">Good morning!</string>

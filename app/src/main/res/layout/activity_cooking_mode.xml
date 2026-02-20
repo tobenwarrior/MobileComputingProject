@@ -69,6 +69,17 @@
             android:clickable="true"
             android:focusable="true" />
 
+        <!-- Voice command hint (shown when voice is enabled) -->
+        <TextView
+            android:id="@+id/tv_voice_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="next | back | repeat"
+            android:textSize="10sp"
+            android:textColor="@color/brand_primary"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp" />
+
         <!-- Voice command toggle -->
         <ImageView
             android:id="@+id/btn_voice"
@@ -78,8 +89,7 @@
             android:padding="10dp"
             android:contentDescription="@string/cooking_btn_voice_off"
             android:clickable="true"
-            android:focusable="true"
-            android:layout_marginStart="2dp" />
+            android:focusable="true" />
 
     </LinearLayout>
 

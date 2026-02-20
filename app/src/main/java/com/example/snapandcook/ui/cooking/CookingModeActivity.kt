@@ -196,12 +196,13 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
             voiceEnabled = true
             updateVoiceButton()
-            toast("Voice commands enabled! Say: next, previous, back, repeat, or again")
+            binding.tvVoiceHint.show()
             startListening()
         } else {
             voiceEnabled = false
             speechRecognizer?.stopListening()
             updateVoiceButton()
+            binding.tvVoiceHint.gone()
         }
     }
 
