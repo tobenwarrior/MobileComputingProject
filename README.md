@@ -1,45 +1,139 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/ca1TJBks)
-[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=22236557)
-# Team Project for CSD312x
+# Snap & Cook
 
-This is an empty placeholder for your project files.
-## Team Organization
-blackmonkeyshoulder
+A native Android application developed as part of a Mobile Computing project at the Singapore Institute of Technology (SIT).
 
-### Research Question
-[Your main research question here]
+---
 
-### Construct-Based Subteams
+## Team Members
 
-#### Comfort Subteam
-| Role | Name | Student ID | GitHub Username | Primary Sections |
-|------|------|------------|-----------------|------------------|
-| Theory Specialist | Lucas | 2301212 | @tobenwarrior | Methodology (Comfort measurement), References |
-| Data Analyst | Ernest | 2301223 | @sTsenre | Results (Comfort), Data Appendix |
-| Design Analyst | ... | ... | @username | Discussion (Comfort implications) |
+| Name | SIT ID |
+|------|--------|
+| Ernest Ho Yong Heng | 2301223 |
+| Lucas Yee Junjie | 2301212 |
+| Tan Shun Zhi Tomy | 2301341 |
+| Wong Woon Li | 2301308 |
+| Yan Yu | 2301213 |
+| Muhammad Zikry Bin Zakaria | 2201751 |
 
-#### Flow Subteam
-| Role | Name | Student ID | GitHub Username | Primary Sections |
-|------|------|------------|-----------------|------------------|
-| Theory Specialist | Kai Rui | ... | @username | Methodology (Flow measurement), References |
-| Data Analyst | Tommy | ... | @username | Results (Flow), Data Appendix |
-| Design Analyst | ... | ... | @username | Discussion (Flow implications) |
+---
 
-#### [Your Third Construct] Subteam
-| Role | Name | Student ID | GitHub Username | Primary Sections |
-|------|------|------------|-----------------|------------------|
-| Theory Specialist | ... | ... | @username | Methodology ([Construct] measurement), References |
-| Data Analyst | ... | ... | @username | Results ([Construct]), Data Appendix |
-| Design Analyst | ... | ... | @username | Discussion ([Construct] implications) |
+## Introduction
 
-#### Overall Coordination
-| Role | Name | Student ID | GitHub Username | Primary Sections |
-|------|------|------------|-----------------|------------------|
-| Overall Coordinator | ... | ... | @username | Introduction, Conclusion, README, Presentation |
+**Snap & Cook** turns your fridge into a recipe book. Simply take a photo of the ingredients you have on hand, and the app uses Google Gemini AI to identify them. It then searches the Spoonacular recipe database to suggest matching recipes you can cook right away. Once you pick a recipe, a guided cooking mode reads each step aloud and responds to voice commands — no touching your phone with messy hands required.
 
+---
 
-## Collaboration Strategy
-- **Task Assignment:** GitHub Issues with assignees
-- **Progress Tracking:** GitHub Project Board with milestones
-- **Quality Control:** All edits submitted via Pull Requests with peer review
-- **Communication:** [Your primary channel - Telegram/WhatsApp/Discord] + GitHub discussions on issues
+## Language & Technology
+
+| Category | Technology |
+|----------|------------|
+| Language | Kotlin |
+| Platform | Native Android (min SDK 26 / target SDK 35) |
+| AI / Vision | Google Gemini 1.5 Flash |
+| Recipe Data | Spoonacular API |
+| Local Database | Room (SQLite) |
+| Networking | Retrofit + OkHttp |
+| Image Loading | Glide |
+| Camera | CameraX |
+| Architecture | MVVM with Repository pattern |
+| Async | Kotlin Coroutines + LiveData |
+| Build System | Gradle (Kotlin DSL) |
+
+---
+
+## Features
+
+- **Ingredient Detection** — Photograph ingredients and let Gemini AI identify them automatically.
+- **Manual Editing** — Review and edit the detected ingredient list before searching.
+- **Recipe Search** — Fetches matching recipes from Spoonacular using detected ingredients.
+- **Save Recipes** — Bookmark favourite recipes for offline access via a local Room database.
+- **Guided Cooking Mode** — Step-by-step instructions read aloud via Text-to-Speech with automatic microphone activation after each step.
+- **Voice Commands** — Say *"next"*, *"previous"*, or *"repeat"* hands-free while cooking.
+- **API Key Rotation** — Multiple Spoonacular keys rotate automatically on quota exhaustion for uninterrupted use.
+
+---
+
+## App Flow
+
+```
+Splash Screen
+    └── Main Screen (Home / Saved Recipes)
+            └── Camera Screen (capture photo)
+                    └── Verification Screen (review ingredients)
+                            └── Recipe Results Screen
+                                    └── Cooking Mode Screen
+```
+
+---
+
+## Architecture Overview
+
+The project follows **MVVM with a Repository pattern**:
+
+```
+ui/             — Activities, ViewModels, RecyclerView Adapters
+data/remote/    — Retrofit API clients, Gemini client, Repository
+data/local/     — Room database, DAO, SavedRecipe entity
+data/model/     — POJOs for API responses
+ml/             — IngredientDetector (Gemini vision pipeline)
+util/           — Extension functions, RecipeConverter
+```
+
+---
+
+## Setup & Build
+
+### Prerequisites
+
+- Android Studio Hedgehog or later
+- Android device or emulator running API 26+
+- A Google Gemini API key
+- One or more Spoonacular API keys
+
+### API Key Configuration
+
+Create a `local.properties` file in the project root (it is gitignored) and add:
+
+```properties
+GEMINI_API_KEY=your_gemini_key_here
+SPOONACULAR_API_KEY_1=your_spoonacular_key_here
+SPOONACULAR_API_KEY_2=optional_second_key
+```
+
+### Build Commands
+
+```bash
+# Debug build
+./gradlew assembleDebug
+
+# Install on connected device
+./gradlew installDebug
+
+# Run unit tests
+./gradlew test
+
+# Clean and rebuild
+./gradlew clean assembleDebug
+```
+
+Windows users can also run:
+
+```bat
+build_debug.bat
+```
+
+---
+
+## Permissions Required
+
+| Permission | Purpose |
+|------------|---------|
+| `CAMERA` | Capturing ingredient photos |
+| `RECORD_AUDIO` | Voice commands in cooking mode |
+| `INTERNET` | Gemini AI and Spoonacular API calls |
+
+---
+
+## License
+
+This project was developed for academic purposes at the Singapore Institute of Technology. All rights reserved by the team members listed above.

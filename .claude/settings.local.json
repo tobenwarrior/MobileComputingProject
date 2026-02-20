@@ -14,7 +14,10 @@
       "Bash(./gradlew assembleDebug:*)",
       "Bash(bash gradlew:*)",
       "Bash(cmd.exe /c gradlew.bat assembleDebug)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(wc:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)"
     ]
   }
 }
