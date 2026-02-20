@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_card"
+    android:layout_marginBottom="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp">
+
+    <!-- Ingredient name -->
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="17sp"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold" />
+
+    <!-- Manual badge -->
+    <TextView
+        android:id="@+id/tv_manual_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Added"
+        android:textSize="11sp"
+        android:textColor="@color/brand_secondary"
+        android:background="@drawable/bg_secondary_surface"
+        android:paddingStart="7dp"
+        android:paddingEnd="7dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone" />
+
+    <!-- Confidence badge -->
+    <TextView
+        android:id="@+id/tv_confidence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:textColor="@color/brand_primary"
+        android:background="@drawable/bg_tag"
+        android:paddingStart="7dp"
+        android:paddingEnd="7dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone" />
+
+    <!-- Delete button -->
+    <ImageView
+        android:id="@+id/btn_delete"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_delete"
+        android:padding="6dp"
+        android:contentDescription="@string/cd_delete_ingredient"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Step number circle in recipe instructions -->
+    <dimen name="step_circle_size">30dp</dimen>
+    <dimen name="step_circle_margin">14dp</dimen>
+</resources>

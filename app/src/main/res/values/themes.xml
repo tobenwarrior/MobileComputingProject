@@ -1,5 +1,165 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.SnapNCook" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- ============================================================
+         Base Application Theme — Apple-inspired: clean, minimal, warm
+         ============================================================ -->
+    <style name="Theme.SnapAndCook" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorPrimaryDark">@color/brand_primary_dark</item>
+        <item name="colorOnPrimary">@color/text_on_brand</item>
+        <item name="colorSecondary">@color/brand_secondary</item>
+        <item name="colorOnSecondary">@color/text_on_brand</item>
+        <item name="colorSurface">@color/bg_tertiary</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorError">@color/system_red</item>
+        <item name="android:colorBackground">@color/bg_primary</item>
+        <item name="android:windowBackground">@color/bg_primary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/bg_primary</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <!-- Splash Theme: solid brand colour, no action bar -->
+    <style name="Theme.SnapAndCook.Splash" parent="Theme.SnapAndCook">
+        <item name="android:windowBackground">@color/splash_bg</item>
+        <item name="android:statusBarColor">@color/splash_bg</item>
+        <item name="android:navigationBarColor">@color/splash_bg</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
+    </style>
+
+    <!-- ============================================================
+         Toolbar Style
+         ============================================================ -->
+    <style name="SnapAndCook.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/bg_tertiary</item>
+        <item name="titleTextColor">@color/text_primary</item>
+        <item name="subtitleTextColor">@color/text_secondary</item>
+        <item name="titleTextAppearance">@style/TextAppearance.SnapAndCook.ToolbarTitle</item>
+    </style>
+
+    <!-- ============================================================
+         Text Appearances — large, accessible, Apple SF-like
+         ============================================================ -->
+    <style name="TextAppearance.SnapAndCook.ToolbarTitle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="TextAppearance.SnapAndCook.Display" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:textSize">34sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="TextAppearance.SnapAndCook.Headline" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="TextAppearance.SnapAndCook.Title" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.SnapAndCook.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.SnapAndCook.BodySmall" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.SnapAndCook.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+    </style>
+
+    <!-- ============================================================
+         Button Styles
+         ============================================================ -->
+    <style name="SnapAndCook.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/brand_primary</item>
+        <item name="android:textColor">@color/text_on_brand</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="SnapAndCook.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/brand_primary</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="android:textColor">@color/brand_primary</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="SnapAndCook.Button.Destructive" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/system_red</item>
+        <item name="android:textColor">@color/text_on_brand</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <!-- ============================================================
+         Card Style
+         ============================================================ -->
+    <style name="SnapAndCook.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/bg_card</item>
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/separator</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+
+    <!-- ============================================================
+         EditText / Input Style
+         ============================================================ -->
+    <style name="SnapAndCook.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/brand_primary</item>
+        <item name="boxBackgroundColor">@color/bg_tertiary</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="hintTextColor">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_tertiary</item>
+    </style>
+
+    <!-- ============================================================
+         Chip Style
+         ============================================================ -->
+    <style name="SnapAndCook.Chip" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_bg</item>
+        <item name="chipStrokeColor">@color/chip_border</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="chipCornerRadius">10dp</item>
+        <item name="android:minHeight">36dp</item>
+    </style>
+
 </resources>

@@ -1,3 +1,97 @@
 <resources>
-    <string name="app_name">SnapNCook</string>
+    <string name="app_name">Snap &amp; Cook</string>
+
+    <!-- Splash -->
+    <string name="splash_tagline">Scan. Detect. Cook.</string>
+
+    <!-- Home / Main -->
+    <string name="home_greeting_morning">Good morning!</string>
+    <string name="home_greeting_afternoon">Good afternoon!</string>
+    <string name="home_greeting_evening">Good evening!</string>
+    <string name="home_subtitle">What\'s in your kitchen today?</string>
+    <string name="home_btn_camera">Take a Photo</string>
+    <string name="home_btn_gallery">Choose from Gallery</string>
+    <string name="home_btn_saved">My Saved Recipes</string>
+    <string name="home_tip_title">Quick Tip</string>
+    <string name="home_tip_text">Point your camera at your ingredients and we\'ll detect them automatically!</string>
+    <string name="home_recent_title">Recently Saved</string>
+    <string name="home_no_recent">No saved recipes yet.\nStart cooking!</string>
+
+    <!-- Camera -->
+    <string name="camera_title">Capture Ingredients</string>
+    <string name="camera_hint">Point at your ingredients</string>
+    <string name="camera_btn_capture">Snap Photo</string>
+    <string name="camera_btn_flash">Flash</string>
+    <string name="camera_btn_flip">Flip Camera</string>
+    <string name="camera_btn_gallery">Gallery</string>
+    <string name="camera_photos_selected">%d photo(s) selected</string>
+    <string name="camera_btn_analyze">Analyze Ingredients</string>
+    <string name="camera_permission_denied">Camera permission is required to take photos.</string>
+    <string name="camera_permission_settings">Open Settings</string>
+
+    <!-- Verification -->
+    <string name="verification_title">Your Ingredients</string>
+    <string name="verification_subtitle">Review and edit before generating your recipe</string>
+    <string name="verification_analyzing">Detecting ingredients…</string>
+    <string name="verification_add_hint">Add an ingredient…</string>
+    <string name="verification_btn_add">Add</string>
+    <string name="verification_btn_confirm">Find Recipes</string>
+    <string name="verification_empty">No ingredients detected.\nTry adding some manually.</string>
+    <string name="verification_delete_confirm">Remove ingredient?</string>
+    <string name="verification_count">%d ingredient(s)</string>
+
+    <!-- Recipe Result -->
+    <string name="recipe_title">Recipe Found!</string>
+    <string name="recipe_ingredients_title">Ingredients</string>
+    <string name="recipe_instructions_title">Instructions</string>
+    <string name="recipe_btn_cook">Start Cooking Mode</string>
+    <string name="recipe_btn_save">Save Recipe</string>
+    <string name="recipe_saved_success">Recipe saved!</string>
+    <string name="recipe_already_saved">Already in your collection</string>
+    <string name="recipe_servings">Serves %d</string>
+    <string name="recipe_time">%d min</string>
+    <string name="recipe_calories">%d kcal</string>
+    <string name="recipe_loading">Finding the perfect recipe…</string>
+    <string name="recipe_error">Could not load recipe. Please try again.</string>
+    <string name="recipe_no_results">No recipes found for your ingredients. Try adding more!</string>
+    <string name="recipe_step_label">Step %d of %d</string>
+
+    <!-- Saved Recipes -->
+    <string name="saved_title">My Recipes</string>
+    <string name="saved_empty_title">No saved recipes yet</string>
+    <string name="saved_empty_subtitle">Start by snapping your ingredients!</string>
+    <string name="saved_search_hint">Search recipes…</string>
+    <string name="saved_delete_confirm">Delete this recipe?</string>
+    <string name="saved_delete_btn">Delete</string>
+    <string name="saved_cancel_btn">Cancel</string>
+
+    <!-- Cooking Mode -->
+    <string name="cooking_title">Cooking Mode</string>
+    <string name="cooking_btn_prev">Previous</string>
+    <string name="cooking_btn_next">Next</string>
+    <string name="cooking_btn_tts_on">Read Aloud: ON</string>
+    <string name="cooking_btn_tts_off">Read Aloud: OFF</string>
+    <string name="cooking_done_title">You\'re done!</string>
+    <string name="cooking_done_subtitle">Enjoy your meal!</string>
+    <string name="cooking_gesture_hint">Wave your hand near the top of your phone to go to the next step</string>
+    <string name="cooking_step_progress">Step %d of %d</string>
+    <string name="cooking_tts_unavailable">Text-to-speech is not available on this device.</string>
+
+    <!-- Common -->
+    <string name="btn_back">Back</string>
+    <string name="btn_retry">Try Again</string>
+    <string name="btn_close">Close</string>
+    <string name="loading">Loading…</string>
+    <string name="error_network">No internet connection. Please check your network.</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="permission_rationale_camera">Snap &amp; Cook needs camera access to photograph your ingredients.</string>
+    <string name="permission_rationale_storage">Snap &amp; Cook needs photo access to analyze images from your gallery.</string>
+
+    <!-- Content Descriptions (Accessibility) -->
+    <string name="cd_app_logo">Snap and Cook logo</string>
+    <string name="cd_recipe_image">Recipe photo</string>
+    <string name="cd_ingredient_item">Ingredient item</string>
+    <string name="cd_delete_ingredient">Remove ingredient</string>
+    <string name="cd_camera_capture">Take photo of ingredients</string>
+    <string name="cd_gallery_pick">Choose photo from gallery</string>
 </resources>
