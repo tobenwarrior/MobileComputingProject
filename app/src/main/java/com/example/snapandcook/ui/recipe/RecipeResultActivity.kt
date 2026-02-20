@@ -28,6 +28,7 @@ import com.example.snapandcook.ui.cooking.CookingModeActivity
 import com.example.snapandcook.util.gone
 import com.example.snapandcook.util.formatMinutes
 import com.example.snapandcook.util.show
+import android.util.Log
 import com.example.snapandcook.util.toast
 
 /**
@@ -60,6 +61,7 @@ class RecipeResultActivity : AppCompatActivity() {
 
         fromSavedId = intent.getIntExtra(EXTRA_RECIPE_ID, -1)
         ingredients = intent.getStringArrayListExtra(EXTRA_INGREDIENTS) ?: emptyList()
+        Log.d("RecipeResult", "=== INGREDIENTS RECEIVED: $ingredients ===")
 
         setupListeners()
         observeViewModel()

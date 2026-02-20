@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -88,6 +89,7 @@ class VerificationActivity : AppCompatActivity() {
 
         binding.btnConfirm.setOnClickListener {
             val names = viewModel.getIngredientNames()
+            Log.d("VerificationActivity", "Find Recipes pressed with ingredients: $names")
             if (names.isEmpty()) {
                 toast(getString(R.string.verification_empty))
             } else {

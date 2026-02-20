@@ -2,6 +2,7 @@ package com.example.snapandcook.data.remote
 
 import com.example.snapandcook.data.model.RecipeDetail
 import com.example.snapandcook.data.model.RecipeSummary
+import android.util.Log
 import retrofit2.Response
 
 /**
@@ -55,14 +56,16 @@ class RecipeRepository {
      * @return A [Result] wrapping a list of [RecipeSummary], or an error.
      */
     suspend fun findRecipes(ingredients: List<String>): Result<List<RecipeSummary>> {
+        Log.d("RecipeRepo", "=== findRecipes called with: $ingredients ===")
         return try {
             // Cap at 15 ingredients — too many causes poor Spoonacular matching
             val query = ingredients.take(15).joinToString(",") { it.trim() }
+            Log.d("RecipeRepo", "=== API query string: $query ===")
             val response = withKeyRotation { key ->
                 api.findByIngredients(
                     ingredients = query,
                     number = 6,
-                    ranking = 2, // 2 = minimise missing ingredients (better relevance)
+                    ranking = 1, // 1 = maximise used ingredients (better for our use case)
                     apiKey = key
                 )
             }

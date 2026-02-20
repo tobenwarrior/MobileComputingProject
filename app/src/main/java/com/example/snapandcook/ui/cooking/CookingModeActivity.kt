@@ -90,9 +90,7 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 } else {
                     tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                         override fun onStart(utteranceId: String?) {
-                            if (voiceEnabled) {
-                                speechRecognizer?.stopListening()
-                            }
+                            // Don't stop microphone - allow voice commands during TTS
                         }
 
                         override fun onDone(utteranceId: String?) {
@@ -125,10 +123,7 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun speakCurrentStep() {
         if (!ttsReady) return
         val text = viewModel.getCurrentStep() ?: return
-        // Stop voice recognition before speaking
-        if (voiceEnabled) {
-            speechRecognizer?.stopListening()
-        }
+        // Don't stop voice recognition - allow commands during TTS
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "step_utterance")
     }
 
@@ -201,6 +196,7 @@ class CookingModeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
             voiceEnabled = true
             updateVoiceButton()
+            toast("Voice commands enabled! Say: next, previous, back, repeat, or again")
             startListening()
         } else {
             voiceEnabled = false
