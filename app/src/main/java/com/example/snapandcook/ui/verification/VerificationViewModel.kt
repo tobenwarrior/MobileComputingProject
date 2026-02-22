@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.snapandcook.data.model.Ingredient
+import com.example.snapandcook.data.remote.OpenFoodFactsClient
 import com.example.snapandcook.ml.IngredientDetector
 import com.example.snapandcook.util.decodeBitmapFromUri
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +34,10 @@ class VerificationViewModel(application: Application) : AndroidViewModel(applica
     // Error state
     private val _error = MutableLiveData<String?>(null)
     val error: LiveData<String?> = _error
+
+    // Barcode lookup result
+    private val _barcodeResult = MutableLiveData<BarcodeResult?>()
+    val barcodeResult: LiveData<BarcodeResult?> = _barcodeResult
 
     private val detector = IngredientDetector()
 
@@ -130,4 +135,35 @@ class VerificationViewModel(application: Application) : AndroidViewModel(applica
     /** Return the current ingredient names as a simple list of strings. */
     fun getIngredientNames(): List<String> =
         _ingredients.value?.map { it.name } ?: emptyList()
+
+    /** Look up a barcode via Open Food Facts and add the product name as an ingredient. */
+    fun lookupBarcode(barcode: String) {
+        viewModelScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    OpenFoodFactsClient.api.getProduct(barcode)
+                }
+                val name = response.product?.productName?.takeIf { it.isNotBlank() }
+                if (name != null) {
+                    addManualIngredient(name)
+                    _barcodeResult.value = BarcodeResult.Found(name)
+                } else {
+                    _barcodeResult.value = BarcodeResult.NotFound
+                }
+            } catch (e: Exception) {
+                Log.e("VerificationVM", "Barcode lookup failed", e)
+                _barcodeResult.value = BarcodeResult.Error
+            }
+        }
+    }
+
+    fun clearBarcodeResult() {
+        _barcodeResult.value = null
+    }
+
+    sealed class BarcodeResult {
+        data class Found(val productName: String) : BarcodeResult()
+        data object NotFound : BarcodeResult()
+        data object Error : BarcodeResult()
+    }
 }

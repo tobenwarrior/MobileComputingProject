@@ -18,6 +18,7 @@ import com.example.snapandcook.ui.recipe.RecipeResultActivity
 import com.example.snapandcook.util.gone
 import com.example.snapandcook.util.show
 import com.example.snapandcook.util.toast
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 
 /**
  * Step 2 — Verification screen.
@@ -87,6 +88,8 @@ class VerificationActivity : AppCompatActivity() {
             } else false
         }
 
+        binding.btnScanBarcode.setOnClickListener { startBarcodeScan() }
+
         binding.btnConfirm.setOnClickListener {
             val names = viewModel.getIngredientNames()
             Log.d("VerificationActivity", "Find Recipes pressed with ingredients: $names")
@@ -96,6 +99,21 @@ class VerificationActivity : AppCompatActivity() {
                 RecipeResultActivity.start(this, names)
             }
         }
+    }
+
+    private fun startBarcodeScan() {
+        val scanner = GmsBarcodeScanning.getClient(this)
+        scanner.startScan()
+            .addOnSuccessListener { barcode ->
+                val rawValue = barcode.rawValue
+                if (!rawValue.isNullOrBlank()) {
+                    viewModel.lookupBarcode(rawValue)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("VerificationActivity", "Barcode scan failed", e)
+                toast(getString(R.string.barcode_scan_failed))
+            }
     }
 
     private fun addManualIngredient() {
@@ -131,6 +149,19 @@ class VerificationActivity : AppCompatActivity() {
 
         viewModel.error.observe(this) { msg ->
             if (!msg.isNullOrBlank()) toast(msg)
+        }
+
+        viewModel.barcodeResult.observe(this) { result ->
+            if (result == null) return@observe
+            when (result) {
+                is VerificationViewModel.BarcodeResult.Found ->
+                    toast(getString(R.string.barcode_product_added, result.productName))
+                is VerificationViewModel.BarcodeResult.NotFound ->
+                    toast(getString(R.string.barcode_product_not_found))
+                is VerificationViewModel.BarcodeResult.Error ->
+                    toast(getString(R.string.error_generic))
+            }
+            viewModel.clearBarcodeResult()
         }
     }
 

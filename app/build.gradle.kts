@@ -105,6 +105,9 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity.ktx)
 
+    // ML Kit Barcode Scanner
+    implementation(libs.mlkit.barcode.scanner)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

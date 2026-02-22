@@ -92,6 +92,11 @@
     <string name="permission_rationale_camera">Snap &amp; Cook needs camera access to photograph your ingredients.</string>
     <string name="permission_rationale_storage">Snap &amp; Cook needs photo access to analyze images from your gallery.</string>
 
+    <!-- Barcode Scanner -->
+    <string name="barcode_product_added">Added: %s</string>
+    <string name="barcode_product_not_found">Product not found. Try adding it manually.</string>
+    <string name="barcode_scan_failed">Barcode scan failed. Please try again.</string>
+
     <!-- Content Descriptions (Accessibility) -->
     <string name="cd_app_logo">Snap and Cook logo</string>
     <string name="cd_recipe_image">Recipe photo</string>
@@ -99,4 +104,5 @@
     <string name="cd_delete_ingredient">Remove ingredient</string>
     <string name="cd_camera_capture">Take photo of ingredients</string>
     <string name="cd_gallery_pick">Choose photo from gallery</string>
+    <string name="cd_scan_barcode">Scan product barcode</string>
 </resources>
