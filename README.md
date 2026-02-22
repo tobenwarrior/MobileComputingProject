@@ -1,5 +1,7 @@
 # Snap & Cook
 
+[![Android CI](https://github.com/sTsenre/MobileComputingProject/actions/workflows/android-ci.yml/badge.svg)](https://github.com/sTsenre/MobileComputingProject/actions/workflows/android-ci.yml)
+
 A native Android application developed as part of a Mobile Computing project at the Singapore Institute of Technology (SIT).
 
 ---
